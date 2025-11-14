@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      # Прокидаємо HTTP-порт
+      - "3000:3000"
+      # Прокидаємо Socket-порт (UDP)
+      - "5000:5000/udp"
+    env_file:
+      - ./.env
+    environment:
+      # Передаємо URI для підключення до MongoDB
+      - MONGO_URI=${MONGO_URI}
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      # Іменований том 'mongo_data' для збереження даних поза контейнером
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
